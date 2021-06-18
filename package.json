@@ -1,0 +1,25 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.3",
+    "axios": "^0.21.1",
+    "colors": "^1.4.0",
+    "discord-player": "^3.2.1",
+    "discord-ytdl-core": "^5.0.0",
+    "discord.js": "^12.5.1",
+    "eval": "^0.1.4",
+    "merge-options": "^3.0.4",
+    "node-fetch": "^2.6.1",
+    "spotify-url-info": "^2.2.0",
+    "ytpl": "^2.0.4",
+    "ytsr": "^3.2.1"
+  }
+}
