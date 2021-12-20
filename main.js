@@ -1,8 +1,14 @@
+//This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. 
+//To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+
 //IMPORT LIBARYS
+const http = require('https');
 const Colors = require('colors')
 console.log("Loading libaries...".red)
 const Discord = require('discord.js');
 const fs      = require('fs');
+const dl      = require('./download.js')
 const client = new Discord.Client();
 const Embeds = require('./embed');
 const Messages = require('./message');
@@ -32,8 +38,30 @@ console.log('Loading json files Sync'.red)
 var config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 var prefix = config.prefix
 
-var pingArray = fs.readFileSync('ping.txt').toString().split("\n");
-var disse = fs.readFileSync('disse.txt').toString().split("\n");
+//download file from https://raw.githubusercontent.com/JoelHer/Rostbratwurst/main/disse.txt
+
+var disse = []
+
+try {
+  disse = fs.readFileSync('disse.txt').toString().split("\n");
+  if (disse.length <= 1) {
+    console.log('[ERROR]: DISSE LIST EMPTY!'.red)
+    console.log('Deleting files...')
+    try {
+      fs.unlinkSync('disse.txt')
+      //file removed
+    } catch(err) {
+      console.error(err)
+    }
+    console.log('Killing process...')
+    process.exit(0)
+  }
+  console.log('Disse loaded successfully: ')
+} catch {
+  console.log('Failed reading disse.txt, downloading latest...'.red)
+  dl.downloadLatest()
+}
+  var pingArray = fs.readFileSync('ping.txt').toString().split("\n");
 var witze = fs.readFileSync('witze.txt').toString().split("\n");
 
 console.log('Loaded config.json successfully'.green)
@@ -112,7 +140,8 @@ var cmdmap = {
   sw: cmd_sw,
   sh: cmd_sw,
   submit: cmd_submit,
-  vbucks: cmd_vbucks
+  vbucks: cmd_vbucks,
+  monte: cmd_monte
 }
 
 function myFunc(arg) {
@@ -158,6 +187,18 @@ function cmd_job (msg, args) {
   numbe=getRandomInt(300)
   msg.channel.send(`You worked and got ${numbe} coins`)
   cmd_addmoney(msg, args, numbe)
+}
+
+
+function cmd_monte (msg, args) {
+  msg.channel.send('Hiiieeer kommmt monte!!')
+  msg.channel.send({
+    message: "Hier kommt monte",
+    files: [{
+      attachment: 'monte.png',
+      name: 'werDasLießtIstDummDuHund.jpg'
+    }]
+  })
 }
 
 
@@ -376,6 +417,8 @@ function cmd_diss (msg, args) {
   } 
 }
 
+
+
 function cmd_witz (msg, args) {
   if (true) {
     var randInt = getRandomInt(witze.length)
@@ -386,8 +429,7 @@ function cmd_witz (msg, args) {
         msg.channel.send("rand int: " + randInt + ", max int: " + witze.length -1)
       }
     }
-  }
-  
+  } 
 }
 
 function cmd_sw (msg, args) {
