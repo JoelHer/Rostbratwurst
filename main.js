@@ -13,6 +13,7 @@ const client = new Discord.Client();
 const Embeds = require('./embed');
 const Messages = require('./message');
 const { Player } = require("discord-player")
+require('dotenv').config()
 const player = new Player(client)
 client.player = player
 
@@ -774,4 +775,4 @@ function help_stats (msg, args) {
   Embeds.info(msg.channel, "Some commands for stats:) \n `"+ prefix +"stats`", "Stats")
 }
 //Help Commands End
-client.login(config.token);
+client.login(process.env.token);
