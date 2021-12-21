@@ -1,4 +1,5 @@
 {
     "prefix":".",
-    "token": "TOKEN HERE"
+    "token": "",
+    "apiPort": 3000
 }

@@ -1,5 +1,6 @@
 const http = require('https');
 const fs   = require('fs');
+
 module.exports = {
     downloadLatest() {
         console.log('Downloading data...')

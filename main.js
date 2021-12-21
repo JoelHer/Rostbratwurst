@@ -13,6 +13,7 @@ const client = new Discord.Client();
 const Embeds = require('./embed');
 const Messages = require('./message');
 const { Player } = require("discord-player")
+var child_process = require('child_process');
 const player = new Player(client)
 client.player = player
 
@@ -69,6 +70,15 @@ console.log("Disse lenght: ".cyan + disse.length)
 console.log("Witze lenght: ".cyan + witze.length)
 console.log("Enchanting lenght: ".cyan + enchanting.length)
 console.log("Schwarze Witze lenght: ".cyan + swwitze.length)
+
+//EXECUTE yourExternalJsFile.js
+child_process.exec('node local_api.js', (error, stdout, stderr) => {
+  console.log(`${stdout}`);
+  console.log(`${stderr}`);
+  if (error !== null) {
+      console.log(`exec error: ${error}`);
+  }
+});
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -406,7 +416,7 @@ function cmd_diss (msg, args) {
   if (args[0] != null) {
     var randInt = getRandomInt(disse.length)
     msg.channel.send("no front ")
-    msg.channel.send("Hey " + args[0] + ", " + disse[randInt])
+    msg.channel.send("Hey " + args.join(" ").toString() + ", " + disse[randInt])
     if (args[1] != null) {
       if (args[1] == "advancedInfo") {
         msg.channel.send("rand int: " + randInt + ", max int: " + disse.length -1)
@@ -774,4 +784,17 @@ function help_stats (msg, args) {
   Embeds.info(msg.channel, "Some commands for stats:) \n `"+ prefix +"stats`", "Stats")
 }
 //Help Commands End
-client.login(config.token);
+
+
+try {
+  client.login(config.token).catch(error => {
+    console.error(error)
+    //process.exit()
+  })
+} catch (error) {
+  console.log("Error")
+}
+
+process.stdin.on('data', data => {
+  console.log(data.toString())
+})
