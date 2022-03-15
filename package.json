@@ -18,7 +18,7 @@
     "eval": "^0.1.4",
     "express": "^4.17.2",
     "merge-options": "^3.0.4",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "spotify-url-info": "^2.2.0",
     "ytpl": "^2.0.4",
     "ytsr": "^3.2.1"
