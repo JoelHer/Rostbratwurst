@@ -1,24 +1,25 @@
 //This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. 
 //To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
-
+//Discord bot
+//Author: @iHouqLF#8910
 
 //IMPORT LIBARYS
 const http = require('https');
-const Colors = require('colors')
-console.log("Loading libaries...".red)
-const Discord = require('discord.js');
+console.log("Loading libaries...")
+const { Client, Intents } = require('discord.js');
 const fs      = require('fs');
 const dl      = require('./download.js')
-const client = new Discord.Client();
+const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 const Embeds = require('./embed');
 const Messages = require('./message');
-const { Player } = require("discord-player")
 var child_process = require('child_process');
-const player = new Player(client)
-client.player = player
+const discordModals = require('discord-modals')
+discordModals(client);
+const { Modal, TextInputComponent, showModal } = require('discord-modals') // Modal class
+
 
 //help
-console.log("Loading Disse, Witze".red)
+console.log("Loading Disse, Witze")
 const alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z", " ", "?", ".", "!", "="]
 const enchanting = ["ᔑ", "ʖ", "ᓵ", "↸", "ᒷ", "⎓", "⊣", "⍑", "╎", "⋮", "ꖌ", "ꖎ", "ᒲ", "リ", "𝙹", "!¡", "ᑑ", "∷", "ᓭ", "ℸ ̣", "⚍", "⍊", "∴", " ̇/", "||", "⨅", " ", "?", ".", "!", "="]
 
@@ -31,11 +32,11 @@ var swwitze = [
   "Wie nennt man einen fetten Schriftsteller? \n\nKugelschreiber ",
   "Achtung: Schwarzer Humor! \n Wie macht man einen router besser? \n man malt ihn schwarz an, dann läuft er besser"
 ]
-console.log("Loading Vars".red)
+console.log("Loading Vars")
 //VARIABLES
 var messages_sent = 0
-console.log("Connecting Async to discord api...".blue)
-console.log('Loading json files Sync'.red)
+console.log("Connecting Async to discord api...")
+console.log('Loading json files Sync')
 var config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 var prefix = config.prefix
 
@@ -46,7 +47,7 @@ var disse = []
 try {
   disse = fs.readFileSync('disse.txt').toString().split("\n");
   if (disse.length <= 1) {
-    console.log('[ERROR]: DISSE LIST EMPTY!'.red)
+    console.log('[ERROR]: DISSE LIST EMPTY!')
     console.log('Deleting files...')
     try {
       fs.unlinkSync('disse.txt')
@@ -59,17 +60,17 @@ try {
   }
   console.log('Disse loaded successfully: ')
 } catch {
-  console.log('Failed reading disse.txt, downloading latest...'.red)
+  console.log('Failed reading disse.txt, downloading latest...')
   dl.downloadLatest()
 }
   var pingArray = fs.readFileSync('ping.txt').toString().split("\n");
 var witze = fs.readFileSync('witze.txt').toString().split("\n");
 
-console.log('Loaded config.json successfully'.green)
-console.log("Disse lenght: ".cyan + disse.length)
-console.log("Witze lenght: ".cyan + witze.length)
-console.log("Enchanting lenght: ".cyan + enchanting.length)
-console.log("Schwarze Witze lenght: ".cyan + swwitze.length)
+console.log('Loaded config.json successfully')
+console.log("Disse lenght: " + disse.length)
+console.log("Witze lenght: " + witze.length)
+console.log("Enchanting lenght: " + enchanting.length)
+console.log("Schwarze Witze lenght: " + swwitze.length)
 
 //EXECUTE yourExternalJsFile.js
 child_process.exec('node local_api.js', (error, stdout, stderr) => {
@@ -79,6 +80,24 @@ child_process.exec('node local_api.js', (error, stdout, stderr) => {
       console.log(`exec error: ${error}`);
   }
 });
+
+const modal = new Modal() // We create a Modal
+.setCustomId('modal-customid')
+.setTitle('Test of Discord-Modals!')
+.addComponents(
+  new TextInputComponent() // We create a Text Input Component
+  .setCustomId('textinput-customid')
+  .setLabel('Some text Here')
+  .setStyle('SHORT') //IMPORTANT: Text Input Component Style can be 'SHORT' or 'LONG'
+  .setMinLength(4)
+  .setMaxLength(10)
+  .setPlaceholder('Write a text here')
+  .setRequired(true) // If it's required or not
+);
+
+function cmd_createModal (msg, args) {
+  
+}
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -92,30 +111,12 @@ const getApp = (guildId) => {
   return app
 }
 
-const guildId = '699986991705620481'
+const guildId = '715268273775575070'
 
 client.on('ready', async () => {
-  console.log(`Logged in as ${client.user.tag}!`.blue);
+  console.log(`Logged in as ${client.user.tag}!`);
   getDate();
   client.user.setActivity(prefix + "help")
-
-  const commands = await getApp(guildId).commands.get()
-  console.log(commands)
-
-  await getApp(guildId).commands.post({
-    data:{
-      name: 'ping',
-      description: 'Oh yeah ping pong pp yk??'
-    }
-  })
-
-  client.ws.on('INTERACTION_CREATE', async (interaction) => {
-    const command = interaction.data.name.toLowerCase()
-
-    if (command === 'ping'){
-      reply(interaction, pingArray[getRandomInt(pingArray.length)])
-    }
-  })
 });
 
 const reply = (interaction, response) => {
@@ -187,6 +188,19 @@ studentA = {
 
 let amount = 0;
 let errAcc
+
+
+
+client.on('interactionCreate', (interaction) => {
+  // Let's say the interaction will be a Slash Command called 'ping'.
+  if(interaction.commandName === 'abccde'){
+    showModal(modal, {
+      client: client, // This method needs the Client to show the Modal through the Discord API.
+      interaction: interaction // This method needs the Interaction to show the Modal with the Interaction ID & Token.
+    })
+  }
+  
+})
 
 
 
@@ -547,7 +561,7 @@ function help_stats (msg, args) {
 //HELP DIALOG
 //**********************************************
 
-client.on('message', msg => {
+client.on('messageCreate', msg => {
   var cont = msg.content,
     author = msg.author,
     chan = msg.channel,
